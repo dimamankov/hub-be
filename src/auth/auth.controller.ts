@@ -4,10 +4,19 @@ import {
   Res,
   Req,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
-import { Types } from 'mongoose';
+import { LocalAuthGuard } from './local-auth.guard';
+
+// Add this interface to extend the Express Request type
+interface RequestWithUser extends Request {
+  user: {
+    userId: string;
+    email: string;
+  };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -36,22 +45,46 @@ export class AuthController {
         password: string;
       };
 
+      if (!email || !password) {
+        throw new BadRequestException('Email and password are required');
+      }
+
       const user = await this.authService.signUp({ email, password });
       const data = {
         userId: user._id.toString(),
         email: user.email,
       };
-      console.log(data);
+
       return (await this.attachJwtCookie(data, res))
         .status(200)
         .json({ message: 'User successfully created' });
     } catch (error) {
-      throw new BadRequestException('Something went wrong');
+      if (error.code === 11000) {
+        throw new BadRequestException('Email already exists');
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to create user account');
     }
   }
 
-  @Post('signin')
-  signin(userData: { email: string; password: string }) {
-    return this.authService.signin(userData);
+  @UseGuards(LocalAuthGuard)
+  @Post('sign-in')
+  async login(@Req() req: RequestWithUser, @Res() res: Response) {
+    return (await this.attachJwtCookie(req.user, res))
+      .status(200)
+      .json({ message: 'Login successful' });
+  }
+
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    return res
+      .clearCookie('jwt', {
+        httpOnly: true,
+        sameSite: 'strict',
+      })
+      .status(204)
+      .json({ message: 'Logged out successfully' });
   }
 }
