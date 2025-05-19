@@ -1,16 +1,15 @@
 import {
+  BadRequestException,
   Controller,
   Post,
-  Res,
   Req,
-  BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Request } from 'express';
+
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 
-// Add this interface to extend the Express Request type
 interface RequestWithUser extends Request {
   user: {
     userId: string;
@@ -22,23 +21,8 @@ interface RequestWithUser extends Request {
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  async attachJwtCookie(
-    data: { email: string; userId: string },
-    res: Response,
-  ) {
-    const jwt = await this.authService.login(data);
-
-    // Set the JWT as an HttpOnly, Secure, and SameSite cookie
-    return res.cookie('jwt', jwt, {
-      httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production', // Ensure cookie is sent over HTTPS in production
-      sameSite: 'strict', // Protect against CSRF attacks
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7d in milliseconds
-    });
-  }
-
   @Post('sign-up')
-  async signUp(@Req() req: Request, @Res() res: Response) {
+  async signUp(@Req() req: Request) {
     try {
       const { email, password } = req.body as {
         email: string;
@@ -55,9 +39,11 @@ export class AuthController {
         email: user.email,
       };
 
-      return (await this.attachJwtCookie(data, res))
-        .status(200)
-        .json({ message: 'User successfully created' });
+      const token = await this.authService.login(data);
+      return {
+        message: 'User successfully created',
+        token,
+      };
     } catch (error) {
       if (error.code === 11000) {
         throw new BadRequestException('Email already exists');
@@ -71,20 +57,18 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('sign-in')
-  async login(@Req() req: RequestWithUser, @Res() res: Response) {
-    return (await this.attachJwtCookie(req.user, res))
-      .status(200)
-      .json({ message: 'Login successful' });
+  async login(@Req() req: RequestWithUser) {
+    const { token, userId } = await this.authService.login(req.user);
+    return {
+      token,
+      userId,
+    };
   }
 
   @Post('logout')
-  async logout(@Res() res: Response) {
-    return res
-      .clearCookie('jwt', {
-        httpOnly: true,
-        sameSite: 'strict',
-      })
-      .status(204)
-      .json({ message: 'Logged out successfully' });
+  async logout() {
+    return {
+      message: 'Logged out successfully',
+    };
   }
 }
