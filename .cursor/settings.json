@@ -1,0 +1,43 @@
+{
+  "projectContext": {
+    "framework": "NestJS",
+    "version": "latest",
+    "architecture": {
+      "pattern": "Repository-Service-Controller",
+      "description": "Using modern NestJS architecture with repositories, services, and controllers"
+    },
+    "codingStandards": {
+      "syntax": "Latest TypeScript/JavaScript syntax",
+      "style": "Follow NestJS best practices and conventions",
+      "patterns": [
+        "Use dependency injection",
+        "Follow SOLID principles",
+        "Implement proper error handling",
+        "Use async/await for asynchronous operations",
+        "Implement proper validation using class-validator",
+        "Use proper typing with TypeScript"
+      ]
+    },
+    "projectStructure": {
+      "modules": "Feature-based modular architecture",
+      "components": [
+        "Controllers - Handle HTTP requests",
+        "Services - Contain business logic",
+        "Repositories - Handle data access",
+        "DTOs - Data Transfer Objects",
+        "Entities - Database models",
+        "Interfaces - Type definitions"
+      ]
+    }
+  },
+  "aiAssistance": {
+    "context": "Backend development with NestJS",
+    "focus": [
+      "Clean architecture",
+      "Type safety",
+      "Code reusability",
+      "Performance optimization",
+      "Security best practices"
+    ]
+  }
+}
