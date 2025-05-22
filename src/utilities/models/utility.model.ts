@@ -56,6 +56,16 @@ export class Utility {
 export const UtilitySchema = SchemaFactory.createForClass(Utility);
 UtilitySchema.index({ userId: 1 });
 UtilitySchema.index({ startPeriod: 1, endPeriod: 1 });
+
+UtilitySchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
+
 export type UtilityModel = Model<Utility>;
 
 export type UtilityDocument = HydratedDocument<Utility>;

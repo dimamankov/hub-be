@@ -8,8 +8,8 @@ import { UtilitiesRepository } from './utilities.repository';
 export class UtilitiesService {
   constructor(private readonly utilitiesRepository: UtilitiesRepository) {}
 
-  create(createUtilityDto: CreateUtilityDto) {
-    return this.utilitiesRepository.create(createUtilityDto);
+  create(createUtilityDto: CreateUtilityDto, userId: string) {
+    return this.utilitiesRepository.create(createUtilityDto, userId );
   }
 
   findAll(userId: string, page = 1, limit = 10) {
