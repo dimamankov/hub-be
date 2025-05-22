@@ -12,9 +12,15 @@ export class UtilitiesRepository {
     @InjectModel(Utility.name) private utilityModel: Model<Utility>
   ) {}
 
-  async create(createUtilityDto: CreateUtilityDto): Promise<Utility> {
+  async create(
+    createUtilityDto: CreateUtilityDto,
+    userId: string
+  ): Promise<Utility> {
     try {
-      const createdUtility = await this.utilityModel.create(createUtilityDto);
+      const createdUtility = await this.utilityModel.create({
+        ...createUtilityDto,
+        userId,
+      });
       return createdUtility;
     } catch (error) {
       throw new Error(`Failed to create utility: ${error.message}`);
@@ -79,6 +85,7 @@ export class UtilitiesRepository {
       if (!deletedUtility) {
         throw new NotFoundException(`Utility with ID ${id} not found`);
       }
+
       return deletedUtility;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;

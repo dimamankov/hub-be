@@ -52,8 +52,8 @@ export class CreateUtilityDto {
   comments?: string;
 
   @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @IsOptional()
+  userId?: string;
 
   @IsString()
   @IsOptional()
