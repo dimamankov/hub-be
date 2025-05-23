@@ -12,16 +12,16 @@ export class Utility {
   @Prop({ required: false })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   startPeriod: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   endPeriod: Date;
 
   @Prop({ required: false })
   dateToPay: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   paidDate: Date;
 
   @Prop({ required: true })
@@ -47,10 +47,10 @@ export class Utility {
   isDebt: boolean;
 
   @Prop({ required: false })
-  receiptPhotoUrl: string;
+  receiptPhotoUrl: File;
 
   @Prop({ required: false })
-  paymentSlipPhotoUrl: string;
+  paymentSlipPhotoUrl: File;
 }
 
 export const UtilitySchema = SchemaFactory.createForClass(Utility);
