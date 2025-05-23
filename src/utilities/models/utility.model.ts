@@ -47,10 +47,10 @@ export class Utility {
   isDebt: boolean;
 
   @Prop({ required: false })
-  receiptPhotoUrl: File;
+  receiptPhotoUrl: string;
 
   @Prop({ required: false })
-  paymentSlipPhotoUrl: File;
+  paymentSlipPhotoUrl: string;
 }
 
 export const UtilitySchema = SchemaFactory.createForClass(Utility);
