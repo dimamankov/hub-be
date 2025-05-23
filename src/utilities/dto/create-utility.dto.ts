@@ -21,13 +21,13 @@ export class CreateUtilityDto {
 
   @IsDate()
   @Type(() => Date)
-  @IsNotEmpty()
-  startPeriod: Date;
+  @IsOptional()
+  startPeriod?: Date;
 
   @IsDate()
   @Type(() => Date)
-  @IsNotEmpty()
-  endPeriod: Date;
+  @IsOptional()
+  endPeriod?: Date;
 
   @IsDate()
   @Type(() => Date)
@@ -36,8 +36,8 @@ export class CreateUtilityDto {
 
   @IsDate()
   @Type(() => Date)
-  @IsNotEmpty()
-  paidDate: Date;
+  @IsOptional()
+  paidDate?: Date;
 
   @IsNumber()
   @IsNotEmpty()
